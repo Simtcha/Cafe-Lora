@@ -21,3 +21,21 @@ document.querySelector('#root').innerHTML = render(
    < Footer />  
   </div>
 );
+
+//otevirani hamburgerove nabidky a zavirani
+const hamburger = document.querySelector(".nav-btn")
+const nav = document.querySelector(".rollout-nav")
+
+const vypinac = () => {
+  nav.classList.toggle("nav-closed")
+}
+hamburger.addEventListener('click', vypinac)
+
+
+//tohle by melo zavrit hamburger pri kliknuti na link
+const separateLinks = nav.querySelectorAll("a")
+separateLinks.forEach(link => {
+  link.addEventListener('click', () => {
+    nav.classList.add('nav-closed')
+  })
+})
