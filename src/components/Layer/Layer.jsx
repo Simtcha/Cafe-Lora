@@ -1,4 +1,7 @@
-export const Layer = ( {color, label} ) => {
+import './Layer.css'
+
+export const Layer = ( drinks ) => {
+    const { color, label } = drinks
     return (
     <>
       <div className="layer">
