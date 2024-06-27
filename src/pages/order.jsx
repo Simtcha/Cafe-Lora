@@ -2,56 +2,42 @@ import { render } from '@czechitas/render';
 import '../global.css';
 import './index.css';
 import './order.css';
+import { Header } from '../components/Header/Header';
+import { Footer } from '../components/Footer/Footer';
+import { OrderComp } from '../components/OrderComp/OrderComp';
 
-document.querySelector('#root').innerHTML = render(
+
+const fetchOrderedDrinks = async () => {
+  const response = await fetch('http://localhost:4000/api/drinks?filter=ordered:eq:true&select=id,name,image');
+  const json = await response.json();
+  return json.data;
+};
+
+const OrderPage = async () => {
+  const items = await fetchOrderedDrinks();
+
+  document.querySelector('#root').innerHTML = render(
   <div className="page">
     <div className="page">
-      <header>
-        <div className="container header__content">
-          <div className="site-logo"></div>
-
-          <nav className="inline-nav">
-            <a href="/">Hlavní stránka</a>
-          </nav>
-
-        </div>
-      </header>
+      <Header showMenu={false} />
 
       <main className="order">
         <div className="container order__content">
-          <h1>Vaše objedávnka</h1>
-          <p className="empty-order">Zatím nemáte nic objednáno</p>
-          <div className="order__items">
-            <div className="order-item">
-              <img
-                src="/cups/espresso.png"
-                className="order-item__image"
-              />
-              <div className="order-item__name">
-                Espresso
-              </div>
-            </div>
+        <h1>Vaše objedávka</h1>
 
-            <div className="order-item">
-              <img
-                src="/cups/doppio.png"
-                className="order-item__image"
-              />
-              <div className="order-item__name">
-                Doppio
-              </div>
-            </div>
-          </div>
+          {items.length === 0 ? (
+            <p className="empty-order">Zatím nemáte nic objednáno</p>
+          ) : (
+            <OrderComp items={items}/>
+          )}           
+
         </div>
       </main>
 
-      <footer>
-        <div className="container">
-          <div className="footer__content">
-            Café Lóra je tréningový projekt v rámci Czechitas kurzu JavaScript 2
-          </div>
-        </div>
-      </footer>
+   < Footer />
     </div>
   </div>
-);
+)}
+
+
+OrderPage();

@@ -8,8 +8,6 @@ import { Gallery } from '../components/Gallery/Gallery';
 import { Contact } from '../components/Contact/Contact';
 import { Footer } from '../components/Footer/Footer';
 
-
-
 const fetchDrinks = async () => {
   const response = await fetch(`http://localhost:4000/api/drinks`)
   const json = await response.json()
@@ -19,9 +17,10 @@ const fetchDrinks = async () => {
  console.log(drinks)
 
 
+
 document.querySelector('#root').innerHTML = render(
   <div className="page">
-   < Header />
+   < Header showMenu={true} />
     <main>
       < Banner />
       < Menu drinks={drinks} />
@@ -31,6 +30,7 @@ document.querySelector('#root').innerHTML = render(
    < Footer />  
   </div>
 );
+
 
 //otevirani hamburgerove nabidky a zavirani
 const hamburger = document.querySelector(".nav-btn")
@@ -42,10 +42,72 @@ const vypinac = () => {
 hamburger.addEventListener('click', vypinac)
 
 
-//tohle by melo zavrit hamburger pri kliknuti na link
+//zavira hamburger pri kliknuti na link
 const separateLinks = nav.querySelectorAll("a")
 separateLinks.forEach(link => {
   link.addEventListener('click', () => {
     nav.classList.add('nav-closed')
   })
 })
+
+
+/*
+const tlacitko = document.querySelector(".order-btn")
+tlacitko.addEventListener('click', ()=> {
+tlacitko.classList.toggle("--ordered")
+})*/
+
+
+const addOrderListeners = (drinks) => {
+  const forms = document.querySelectorAll('.drink__controls')
+  forms.forEach(form => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = form.dataset.id
+      const orderBtn = form.querySelector(".order-btn")
+
+      
+      const drink = drinks.find(drink => drink.id == id)// Najde kavu v poli drinks podle id
+      if (!drink) return; // overeni existence kavy
+      const newOrderedValue = !drink.ordered   //zmena hodnoty ordered na opacnou
+
+
+      const response = await fetch(`http://localhost:4000/api/drinks/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify([{ op: 'replace', path: '/ordered', value: newOrderedValue }])
+      })
+
+        
+        localStorage.setItem('scrollPosition', window.scrollY) //ulozi aktualni pozici na strance
+        window.location.reload() // udela reload
+
+      if (response.ok) {
+        const updatedDrink = await response.json()
+        console.log(updatedDrink)
+
+        // aktualizuje button a class
+        orderBtn.classList.toggle("order-btn--ordered")
+        orderBtn.textContent = newOrderedValue ? 'Zrušit objednávku' : 'Objednat'
+        
+        // aktualizujje ordered stav v listu drinks
+        drink.ordered = newOrderedValue
+        
+      }
+    });
+  });
+};
+
+addOrderListeners(drinks)
+
+
+// posunuti stranky zpet po reloadu na ulozenou pozici tj. ne nahoru ale na drinky
+window.addEventListener('load', () => {
+  const scrollPosition = localStorage.getItem('scrollPosition');
+  if (scrollPosition !== null) {
+    window.scrollTo(0, parseInt(scrollPosition, 10));
+    localStorage.removeItem('scrollPosition');
+  }
+});

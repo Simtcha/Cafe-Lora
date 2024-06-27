@@ -4,6 +4,11 @@ import './Drink.css'
 
 export const Drink = ( drinks ) => {
     const {id, name, ordered, image, layers} = drinks
+
+    const infobutton = ordered ? "Zrušit objednávku" : "Objednat"
+    const trida = ordered ? "order-btn--ordered" : "order-btn"
+    
+   
 return (
   <div className="drink">
 
@@ -21,13 +26,20 @@ return (
       </div>
     </div>
 
-    <form className="drink__controls">
-      <input type="hidden" className="order-id" value={id} />
-      <button className="order-btn">
-      {ordered ? 'Zrušit objednávku' : 'Objednat'}
-      </button>
+    <form className="drink__controls" data-id={id}>
+      <input type="hidden" className="order-id" value={id}/>
+      <button  className={trida}>{infobutton}</button>
     </form>
 
   </div>
     )
 }
+
+
+
+/*
+<form className="drink__controls" data-id={id}>
+<input type="hidden" className="order-id" value={id}/>
+<button  className={`order-btn ${ordered ? "order-btn--ordered" : "order-btn"}`}>{ordered ? 'Zrušit objednávku' : 'Objednat'}</button>
+</form>*/
+
