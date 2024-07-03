@@ -68,7 +68,6 @@ const addOrderListeners = (drinks) => {
 
       
       const drink = drinks.find(drink => drink.id == id)// Najde kavu v poli drinks podle id
-      if (!drink) return; // overeni existence kavy
       const newOrderedValue = !drink.ordered   //zmena hodnoty ordered na opacnou
 
 
@@ -84,7 +83,7 @@ const addOrderListeners = (drinks) => {
         localStorage.setItem('scrollPosition', window.scrollY) //ulozi aktualni pozici na strance
         window.location.reload() // udela reload
 
-      if (response.ok) {
+      
         const updatedDrink = await response.json()
         console.log(updatedDrink)
 
@@ -95,7 +94,7 @@ const addOrderListeners = (drinks) => {
         // aktualizujje ordered stav v listu drinks
         drink.ordered = newOrderedValue
         
-      }
+    
     });
   });
 };
