@@ -51,27 +51,20 @@ separateLinks.forEach(link => {
 })
 
 
-/*
-const tlacitko = document.querySelector(".order-btn")
-tlacitko.addEventListener('click', ()=> {
-tlacitko.classList.toggle("--ordered")
-})*/
-
-
-const addOrderListeners = (drinks) => {
+const orderbuttons = (drinks) => {
   const forms = document.querySelectorAll('.drink__controls')
   forms.forEach(form => {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const id = form.dataset.id
+      //const id = form.dataset.id
+      const id = e.target.dataset.id
       const orderBtn = form.querySelector(".order-btn")
-
-      
+ 
       const drink = drinks.find(drink => drink.id == id)// Najde kavu v poli drinks podle id
       const newOrderedValue = !drink.ordered   //zmena hodnoty ordered na opacnou
 
 
-      const response = await fetch(`http://localhost:4000/api/drinks/${id}`, {
+      await fetch(`http://localhost:4000/api/drinks/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'
@@ -79,14 +72,10 @@ const addOrderListeners = (drinks) => {
         body: JSON.stringify([{ op: 'replace', path: '/ordered', value: newOrderedValue }])
       })
 
-        
         localStorage.setItem('scrollPosition', window.scrollY) //ulozi aktualni pozici na strance
         window.location.reload() // udela reload
 
-      
-        const updatedDrink = await response.json()
-        console.log(updatedDrink)
-
+              
         // aktualizuje button a class
         orderBtn.classList.toggle("order-btn--ordered")
         orderBtn.textContent = newOrderedValue ? 'Zrušit objednávku' : 'Objednat'
@@ -95,18 +84,50 @@ const addOrderListeners = (drinks) => {
         drink.ordered = newOrderedValue
         
     
-    });
-  });
-};
+    })
+  })
+}
 
-addOrderListeners(drinks)
-
+orderbuttons(drinks) 
 
 // posunuti stranky zpet po reloadu na ulozenou pozici tj. ne nahoru ale na drinky
 window.addEventListener('load', () => {
-  const scrollPosition = localStorage.getItem('scrollPosition');
+  const scrollPosition = localStorage.getItem('scrollPosition')
   if (scrollPosition !== null) {
-    window.scrollTo(0, parseInt(scrollPosition, 10));
-    localStorage.removeItem('scrollPosition');
+    window.scrollTo(0, parseInt(scrollPosition, 10))
+    localStorage.removeItem('scrollPosition')
   }
-});
+})
+
+
+
+/* backup code
+const forms = document.querySelectorAll(".drink__controls")
+forms.forEach((form) => {  
+	form.addEventListener("submit", async (e) => {
+    const id = e.target.dataset.id  
+    const orderBtn = form.querySelector(".order-btn")
+    const drink = drinks.find(drink => drink.id == id)// Najde kavu v poli drinks podle id
+    const newOrderedValue = !drink.ordered   //zmena hodnoty ordered na opacnou 
+   
+    await fetch(`http://localhost:4000/api/drinks/${id}`, 
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify([{ op: 'replace', path: '/ordered', value: newOrderedValue }])
+      })   
+
+    localStorage.setItem('scrollPosition', window.scrollY) //ulozi aktualni pozici na strance
+    window.location.reload() // udela reload    
+
+    // aktualizuje button a class
+     orderBtn.classList.toggle("order-btn--ordered")
+     orderBtn.textContent = newOrderedValue ? 'Zrušit objednávku' : 'Objednat'
+        
+     // aktualizujje ordered stav v listu drinks
+    drink.ordered = newOrderedValue
+    })
+  
+    }) */
