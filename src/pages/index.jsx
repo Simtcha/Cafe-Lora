@@ -58,7 +58,7 @@ const orderbuttons = (drinks) => {
       e.preventDefault();
       //const id = form.dataset.id
       const id = e.target.dataset.id
-      const orderBtn = form.querySelector(".order-btn")
+      //const orderBtn = form.querySelector(".order-btn") // uz neni nutne, staci to v drinks.jsx
  
       const drink = drinks.find(drink => drink.id == id)// Najde kavu v poli drinks podle id
       const newOrderedValue = !drink.ordered   //zmena hodnoty ordered na opacnou
@@ -76,9 +76,9 @@ const orderbuttons = (drinks) => {
         window.location.reload() // udela reload
 
               
-        // aktualizuje button a class
-        orderBtn.classList.toggle("order-btn--ordered")
-        orderBtn.textContent = newOrderedValue ? 'Zrušit objednávku' : 'Objednat'
+      // aktualizuje button a class - uz neni nutne, staci to v drinks.jsx
+      //orderBtn.classList.toggle("order-btn--ordered")
+      //orderBtn.textContent = newOrderedValue ? 'Zrušit objednávku' : 'Objednat'
         
         // aktualizujje ordered stav v listu drinks
         drink.ordered = newOrderedValue
